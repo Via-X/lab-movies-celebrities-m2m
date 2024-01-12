@@ -53,17 +53,15 @@ router.get("/:theId", (req, res, next) => {
   Movie.findById(req.params.theId).populate("cast")
   .then((dbMovie) => {
     res.render("movies/movie-details", dbMovie);
-    // res.send(dbMovie);
   }) 
   .catch((err) => {
     next(err);
   });
- 
 });
 
 
 //UPDATE
-//Route to edit a Movie
+//Route GET to edit a Movie
 router.get("/:theId/edit", (req, res, next) => {
   Movie.findById(req.params.theId).populate("cast")
   .then((theMovie)=> {
@@ -84,6 +82,7 @@ router.get("/:theId/edit", (req, res, next) => {
   .catch(err => next(err));
 });
 
+//Route POST to edit a Movie
 router.post("/:theId", (req, res, next) => {
   const {title, genre, plot, cast} = req.body; 
   Movie.findByIdAndUpdate(req.params.theId, {title, genre, plot, cast}, {new: true})
@@ -98,15 +97,58 @@ router.post("/:theId", (req, res, next) => {
 
 //DELETE
 //Route to delete a Movie
-router.post("/:theId/delete", (req, res, next) => {
-  Movie.findByIdAndDelete(req.params.theId)
-  .then((dbMovie) => {
-    res.redirect("/movies");
-  })
-  .catch((err) => {
-    next(err);
-  })
-})
+// router.post("/:theId/delete", (req, res, next) => {
+//   Movie.findByIdAndDelete(req.params.theId)
+//   .then((dbMovie) => {
+//     res.redirect("/movies");
+//   })
+//   .catch((err) => {
+//     next(err);
+//   })
+// })
 
+// router.post("/:theId/delete", (req, res, next) => {
+//   Movie.findByIdAndDelete(req.params.theId).populate("cast")
+//   .then((dbMovie) => {
+//     Celebrity.find()
+//     .then(allCelebrities => {
+//       allCelebrities.forEach(celeb => {
+//         dbMovie.cast.forEach(castMember => {
+//           if(celeb._id.equals(castMember._id)){
+//             Celebrity.findByIdAndDelete(celeb.id)
+//             .then(() => console.log(celeb.name + " , "))
+//             .catch((err) => next(err))
+            
+//           }
+//         })
+//       });
+//       res.redirect("/movies");
+//     })
+//     .catch((err) => {next(err)});
+//   })
+//   .catch((err) => next(err));
+// }); 
+      
+
+router.post("/:theId/delete", async (req, res, next) => {
+
+  try {
+      const dbMovie = await Movie.findByIdAndDelete(req.params.theId).populate("cast");
+      const allCelebrities = await Celebrity.find(); 
+
+      allCelebrities.forEach((celeb) => {
+        dbMovie.cast.forEach((castMember) => {
+          if(celeb._id.equals(castMember._id)){
+            Celebrity.findByIdAndRemove(celeb._id)
+            .then(() => {console.log(celeb.name)})
+            .catch((err) => next(err));
+          }
+        });
+      });
+      res.redirect("/movies");
+      } catch (error) {
+          console.log("ERROR");
+      }
+});
 
 module.exports = router;
