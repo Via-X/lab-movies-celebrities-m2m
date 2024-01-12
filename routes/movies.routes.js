@@ -27,10 +27,18 @@ router.post('/create', (req, res, next) => {
   .then((dbMovie) => {
     dbMovie.cast.push(req.body.movcelebrity);
     dbMovie.save();
+    console.log(`movcelebrity : ${req.body.movcelebrity}`);
+    Celebrity.findById(req.body.movcelebrity)
+    .then((dbCeleb) => {
+      dbCeleb.movie = dbMovie._id;
+      dbCeleb.save();
+      console.log("DBCELEB:"+dbCeleb.movie);
+    })
+    .catch((err) => next(err));
     res.redirect("/movies");
   })
   .catch((err) => {
-    res.redirect("/create");
+    res.redirect("movies/create");
   });
 });
 
@@ -96,7 +104,7 @@ router.post("/:theId", (req, res, next) => {
 
 
 //DELETE
-//Route to delete a Movie
+//Route to delete a Movie Only
 // router.post("/:theId/delete", (req, res, next) => {
 //   Movie.findByIdAndDelete(req.params.theId)
 //   .then((dbMovie) => {
@@ -107,6 +115,7 @@ router.post("/:theId", (req, res, next) => {
 //   })
 // })
 
+//Route to delete a Movie and Cast Members with Thens
 // router.post("/:theId/delete", (req, res, next) => {
 //   Movie.findByIdAndDelete(req.params.theId).populate("cast")
 //   .then((dbMovie) => {
@@ -129,7 +138,7 @@ router.post("/:theId", (req, res, next) => {
 //   .catch((err) => next(err));
 // }); 
       
-
+//Route to delete a Movie and Cast Members with Async/Await
 router.post("/:theId/delete", async (req, res, next) => {
 
   try {

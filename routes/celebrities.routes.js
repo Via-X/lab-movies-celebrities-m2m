@@ -40,8 +40,9 @@ router.get("/", (req, res, next) => {
 
 //Route to display Celebrity details
 router.get("/:theId", (req, res, next) => {
-  Celebrity.findById(req.params.theId)
+  Celebrity.findById(req.params.theId).populate("movie")
     .then((dbCeleb) => {
+      console.log("Movie Pop: "+ dbCeleb);
       res.render("celebrities/celebrity-details", dbCeleb);
     })
     .catch((err) => {
