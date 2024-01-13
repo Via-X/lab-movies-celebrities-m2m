@@ -1,16 +1,26 @@
 // starter code in both routes/celebrities.routes.js and routes/movies.routes.js
 const router = require("express").Router();
 const Celebrity = require("../models/Celebrity.model");
+// const Movie = require("../models/Movie.model");
+
 
 // all your routes here
+function guardRoute(req, res, next){
+  if(!req.session.currentUser){
+    res.redirect("/login");
+  }
+}
+
 //CREATE
 //Route GET to Add New Celebrity
 router.get("/create", (req, res, next) => {
+  guardRoute(req, res, next);
   res.render("celebrities/new-celebrity");
 });
 
 //Route POST to Add New Celebrity
 router.post("/create", (req, res, next) => {
+  guardRoute(req, res, next);
   Celebrity.create({
     name: req.body.name,
     occupation: req.body.occupation,
@@ -28,6 +38,7 @@ router.post("/create", (req, res, next) => {
 //READ
 //Route to display all Celebrities
 router.get("/", (req, res, next) => {
+  guardRoute(req, res, next);
   Celebrity.find()
     .then((allCelebrities) => {
       res.render("celebrities/celebrities", { celebrities: allCelebrities });
@@ -40,6 +51,7 @@ router.get("/", (req, res, next) => {
 
 //Route to display Celebrity details
 router.get("/:theId", (req, res, next) => {
+  guardRoute(req, res, next);
   Celebrity.findById(req.params.theId).populate("movie")
     .then((dbCeleb) => {
       console.log("Movie Pop: "+ dbCeleb);
@@ -57,6 +69,7 @@ router.get("/:theId", (req, res, next) => {
 //DELETE
 //Route to delete a Celebrity
 router.post("/:theId/delete", (req, res, next) => {
+  guardRoute(req, res, next);
   Celebrity.findByIdAndDelete(req.params.theId)
   .then((dbCelebrity) => {
     res.redirect("/celebrities");

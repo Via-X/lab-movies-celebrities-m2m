@@ -7,10 +7,25 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
+    <a href="/signup"> Signup </a>
+    {{#unless theUser}}
+      <a href="/login"> Login </a>
+    {{/unless}}
+
     <a href="/celebrities"> List Celebrities </a>
     <a href="/celebrities/create"> Add Celebrity </a>
     <a href="/movies/create"> Add Movies </a>
     <a href="/movies"> List Movies </a>
+
+    {{#if theUser}}
+      <form action="/logout" method="post">
+        <button>Logout</button>
+      </form>
+    {{/if}}
+
+    {{#if theUser}}
+      <h3>Welcome, {{theUser.username}}</h3>
+    {{/if}}
 
     {{{body}}}
 
