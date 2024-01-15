@@ -18,14 +18,17 @@ const app = express();
 // ℹ️ This function is getting exported from the config folder. It runs most middlewares
 require('./config')(app);
 
+
 // default value for title local
-const projectName = 'lab-movies-celebrities';
+const projectName = 'lab-movies-celebrities-m2m';
 const capitalized = string => string[0].toUpperCase() + string.slice(1).toLowerCase();
 
 app.locals.title = `${capitalized(projectName)}- Generated with Ironlauncher`;
 
 app.use((req, res, next) => {
   app.locals.theUser = req.session.currentUser;
+  app.locals.errorMessage = req.flash("errorMessage");
+  app.locals.successMessage = req.flash("successMessage");
   next();
 });
 

@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
+    {{#if errorMessage}}
+      <div>
+        {{errorMessage}}
+      </div>
+    {{/if}}
+
+    {{#if successMessage}}
+      <div>
+        {{successMessage}}
+      </div>
+    {{/if}}
+
     <a href="/signup"> Signup </a>
     {{#unless theUser}}
       <a href="/login"> Login </a>

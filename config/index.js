@@ -17,10 +17,13 @@ const favicon = require("serve-favicon");
 // https://www.npmjs.com/package/path
 const path = require("path");
 
-// package used to ?
+// package used for custom error handling
+var flash = require("connect-flash");
+
+// package used to pull session information?
 const session = require("express-session");
 
-// package used to ?
+// package used to store session info temporarily in mongodb?
 const MongoStore = require("connect-mongo"); 
 
 // Middleware configuration
@@ -59,11 +62,13 @@ module.exports = (app) => {
         maxAge: 60000
       }, // ADDED code below !!!
       store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/lab-movies-celebrities'
+        mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/lab-movies-celebrities-m2m'
  
         // ttl => time to live
         // ttl: 60 * 60 * 24 // 60sec * 60min * 24h => 1 day
       })
     })
   );
+
+  app.use(flash());
 };

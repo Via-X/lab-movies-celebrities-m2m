@@ -4,10 +4,14 @@ const Movie = require("../models/Movie.model");
 const Celebrity = require("../models/Celebrity.model");
 
 // all your routes here
-function guardRoute(req, res, next){
+function guardRoute(req, res){
   if(!req.session.currentUser){
-    res.redirect("/login");
-  }
+    //Check if already redirected
+    if(!res.headerSent){
+      res.redirect("/login");
+    }
+    return;
+  };
 }
 
 //CREATE
@@ -38,15 +42,17 @@ router.post('/create', (req, res, next) => {
     console.log(`movcelebrity : ${req.body.movcelebrity}`);
     Celebrity.findById(req.body.movcelebrity)
     .then((dbCeleb) => {
-      dbCeleb.movie = dbMovie._id;
+      dbCeleb.movie.push(dbMovie._id);
       dbCeleb.save();
       console.log("DBCELEB:"+dbCeleb.movie);
     })
     .catch((err) => next(err));
+    req.flash("successMessage", "Movie successfully added");
     res.redirect("/movies");
   })
   .catch((err) => {
-    res.redirect("movies/create");
+    req.flash("errorMessage", "Sorry something went wrong");
+    res.redirect("/create");
   });
 });
 
@@ -110,6 +116,26 @@ router.post("/:theId", (req, res, next) => {
   const {title, genre, plot, cast} = req.body; 
   Movie.findByIdAndUpdate(req.params.theId, {title, genre, plot, cast}, {new: true})
   .then((dbMovie) => {
+
+        //Search Celebrity Movies and adding movie if not there
+        cast.forEach(castMember => {
+          Celebrity.findById(castMember)
+          .then((dbCeleb) =>{
+              console.log("XXX Celeb: " + dbCeleb);
+              if(!dbCeleb.movie.includes(dbMovie._id)){
+               
+                dbCeleb.movie.push(dbMovie._id);
+                dbCeleb.save();
+                console.log("XXXX Added"+ dbCeleb + "movie id" + dbMovie._id)
+              }
+         
+
+          })
+          //Search Celebrity Movies and removing if there
+          //On condition if removed during edit.
+
+          .catch(err => next(err));  
+        });
     res.redirect(`/movies/${req.params.theId}`);
   })
   .catch((err) => {
@@ -118,41 +144,7 @@ router.post("/:theId", (req, res, next) => {
 });
 
 
-//DELETE
-//Route to delete a Movie Only
-// router.post("/:theId/delete", (req, res, next) => {
-//   Movie.findByIdAndDelete(req.params.theId)
-//   .then((dbMovie) => {
-//     res.redirect("/movies");
-//   })
-//   .catch((err) => {
-//     next(err);
-//   })
-// })
-
-//Route to delete a Movie and Cast Members with Thens
-// router.post("/:theId/delete", (req, res, next) => {
-//   Movie.findByIdAndDelete(req.params.theId).populate("cast")
-//   .then((dbMovie) => {
-//     Celebrity.find()
-//     .then(allCelebrities => {
-//       allCelebrities.forEach(celeb => {
-//         dbMovie.cast.forEach(castMember => {
-//           if(celeb._id.equals(castMember._id)){
-//             Celebrity.findByIdAndDelete(celeb.id)
-//             .then(() => console.log(celeb.name + " , "))
-//             .catch((err) => next(err))
-            
-//           }
-//         })
-//       });
-//       res.redirect("/movies");
-//     })
-//     .catch((err) => {next(err)});
-//   })
-//   .catch((err) => next(err));
-// }); 
-      
+//DELETE 
 //Route to delete a Movie and Cast Members with Async/Await
 router.post("/:theId/delete", async (req, res, next) => {
   guardRoute(req, res);
@@ -165,8 +157,8 @@ router.post("/:theId/delete", async (req, res, next) => {
       }
       dbMovie = await Movie.findByIdAndDelete(req.params.theId).populate("cast");
       
+      //Search Celebrities as Movie cast members and delete them as well
       const allCelebrities = await Celebrity.find(); 
-
       allCelebrities.forEach((celeb) => {
         dbMovie.cast.forEach((castMember) => {
           if(celeb._id.equals(castMember._id)){
@@ -176,6 +168,8 @@ router.post("/:theId/delete", async (req, res, next) => {
           }
         });
       });
+      
+
       res.redirect("/movies");
       } catch (error) {
           console.log("ERROR");

@@ -7,7 +7,8 @@ const bcryptjs = require("bcryptjs");
 //CREATE
 //Route GET to create a User
 router.get("/signup", (req, res, next) =>{
-  res.render("users/signup")
+  res.render("users/signup");
+  return;
 });
 
 //Route POST to create a User
@@ -39,33 +40,35 @@ router.get("/login", (req, res, next) => {
 router.post("/login", (req, res, next) => {
   const {email, password} = req.body;
 
-  // if (email === '' || password === '') {
-  //   res.render('/login', {
-  //     errorMessage: 'Please enter both, email and password to login.'
-  //   });
-  //   return;
-  // }
+  if (password.length < 5) {
+    req.flash("errorMessage","Sorry password must be at least 5 characters");
+    res.redirect('/login');
+    return;
+  }
 
   User.findOne({email: email})
   .then(dbUser => {
       if(!dbUser){
+        req.flash("errorMessage", "User not found");
         res.redirect('/login');
-        return;
+       
       } else if (bcryptjs.compareSync(password, dbUser.password)){
         
+        req.flash("successMessage", "Successfully Logged in");
         // saves the entire session
         // req.session.currentUser = dbUser;
-
         req.session.currentUser = {
           _id: dbUser._id,
           username: dbUser.username,
           email: dbUser.email
         };
 
-        res.redirect('/movies');
+        res.redirect('/login');
+      
       } else {
-        res.redirect('/celebrities');
-        return;
+        req.flash("errorMessage","Email and password combination not found");
+        res.redirect('/login');
+  
       }
   })
   .catch(error => next(error));

@@ -1,14 +1,17 @@
 // starter code in both routes/celebrities.routes.js and routes/movies.routes.js
 const router = require("express").Router();
 const Celebrity = require("../models/Celebrity.model");
-// const Movie = require("../models/Movie.model");
-
+const Movie = require("../models/Movie.model");
 
 // all your routes here
-function guardRoute(req, res, next){
+function guardRoute(req, res){
   if(!req.session.currentUser){
-    res.redirect("/login");
-  }
+    //Check if already redirected
+    if(!res.headerSent){
+      res.redirect("/login");
+    }
+    return;
+  };
 }
 
 //CREATE
@@ -27,10 +30,12 @@ router.post("/create", (req, res, next) => {
     catchPhrase: req.body.catchPhrase,
   })
     .then((result) => {
+      req.flash("successMessage", "Celebrity successfully added");
       res.redirect("/celebrities");
     })
     .catch((err) => {
-      res.redirect("/new-celebrity");
+      req.flash("errorMessage", "Sorry something went wrong");
+      res.redirect("/create");
     });
 });
 
@@ -39,8 +44,9 @@ router.post("/create", (req, res, next) => {
 //Route to display all Celebrities
 router.get("/", (req, res, next) => {
   guardRoute(req, res, next);
-  Celebrity.find()
+  Celebrity.find().populate("movie")
     .then((allCelebrities) => {
+      console.log("HERE:",allCelebrities);
       res.render("celebrities/celebrities", { celebrities: allCelebrities });
     })
     .catch((err) => {
@@ -63,6 +69,14 @@ router.get("/:theId", (req, res, next) => {
 });
 
 //UPDATE
+//Route GET to edit a Celebrity
+
+
+//Route POST to edit a Celebrity
+
+
+
+
 
 
 
@@ -70,6 +84,16 @@ router.get("/:theId", (req, res, next) => {
 //Route to delete a Celebrity
 router.post("/:theId/delete", (req, res, next) => {
   guardRoute(req, res, next);
+  Movie.find()
+  .then((dbMovie) => {
+    dbMovie.forEach(theMovie => {
+      theMovie.cast.forEach((celeb, index) => {
+        if(celeb._id.equals(req.params.theId)){
+          theMovie.cast.splice(index, 1);
+        }
+      })
+    })
+  })
   Celebrity.findByIdAndDelete(req.params.theId)
   .then((dbCelebrity) => {
     res.redirect("/celebrities");

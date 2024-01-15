@@ -6,7 +6,10 @@
     </a>
     <h6>Occupation: {{occupation}}</h6>
     <h6>Catch Phrase: {{catchPhrase}}</h6>
-    <h6>Movie: {{movie.title}}</h6>
+
+    {{#each movie}}
+    <h6>Movie: {{this.title}}</h6>
+    {{/each}}
   </div>
 
   <a href="/celebrities/{{_id}}/edit">Edit This Movie</a>
