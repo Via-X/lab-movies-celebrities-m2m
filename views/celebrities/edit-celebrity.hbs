@@ -1,0 +1,29 @@
+<h2>Edit Celebrity</h2>
+
+<form action="/celebrities/{{dbCeleb._id}}" method="post">
+
+  <label>Title</label>
+  <input type="text" name="name" value="{{dbCeleb.name}}"/>
+
+  <label>Genre</label>
+  <input type="text" name="occupation" value="{{dbCeleb.occupation}}" />
+
+  <label>Plot</label>
+  <input type="text" name="cathPhrase" value="{{dbCeleb.catchPhrase}}" />
+
+  <label>Movies</label>
+  <select name="movie" multiple>
+    
+    {{#each allMovies}}
+    {{#if isinthemovielist}}
+      <option value="{{_id}}" selected>{{title}}</option>
+      {{else}}
+      <option value="{{_id}}">{{title}}</option>
+    {{/if}}
+    {{/each}}
+  </select>
+
+  <button type="submit">
+    Save
+  </button>
+</form>

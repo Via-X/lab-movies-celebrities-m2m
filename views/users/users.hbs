@@ -1,0 +1,19 @@
+<h1>Admin View</h1>
+<p>Welcome</p>
+
+
+{{#each allUsers}}
+<hr>
+<div>
+    <a href="/{{this._id}}">
+        <h3>{{this.username}}</h3>
+    </a>
+    {{!-- <h6>email: {{this.email}}</h6> 
+    <h6>Admin Role: {{this.admin}}</h6>
+    <h6>Ready Only Role: {{this.readyonly}}</h6>
+    <h6>Standard User Role: {{this.standarduser}}</h6> --}}
+    
+
+</div>
+{{/each}}
+<hr>

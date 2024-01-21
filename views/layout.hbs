@@ -7,27 +7,25 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
-    {{#if errorMessage}}
-      <div>
-        {{errorMessage}}
-      </div>
-    {{/if}}
-
-    {{#if successMessage}}
-      <div>
-        {{successMessage}}
-      </div>
-    {{/if}}
-
-    <a href="/signup"> Signup </a>
-    {{#unless theUser}}
-      <a href="/login"> Login </a>
-    {{/unless}}
-
-    <a href="/celebrities"> List Celebrities </a>
-    <a href="/celebrities/create"> Add Celebrity </a>
-    <a href="/movies/create"> Add Movies </a>
-    <a href="/movies"> List Movies </a>
+    <div class="message">
+      {{#if errorMessage}}
+          <h3>{{errorMessage}}</h3>
+      {{/if}}
+      {{#if successMessage}}
+          <h3>{{successMessage}}</h3>
+      {{/if}}
+    </div>
+    <div class="layout">  
+      <a href="/signup"class="link"> Signup </a>
+      {{#unless theUser}}
+        <a href="/login" class="link"> Login </a>
+      {{/unless}}
+    
+      <a href="/celebrities" class="link"> List Celebrities </a>
+      <a href="/celebrities/create" class="link"> Add Celebrity </a>
+      <a href="/movies/create" class="link"> Add Movies </a>
+      <a href="/movies" class="link"> List Movies </a>
+    </div>
 
     {{#if theUser}}
       <form action="/logout" method="post">
@@ -40,6 +38,10 @@
     {{/if}}
 
     {{{body}}}
+
+    {{#if theUser.admin}}
+      <a href="/users">Admin Console</a>
+    {{/if}}
 
     <script src="/js/script.js"></script>
   </body>

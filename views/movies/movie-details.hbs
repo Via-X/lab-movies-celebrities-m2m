@@ -2,6 +2,7 @@
 
 <div>
   <h3>Movie Title: {{dbMovie.title}}</h3>
+  <img src="{{dbMovie.image}}" style="height: 150px">
   <h6>Genre : {{dbMovie.genre}}</h6>
   <h6>Plot : {{dbMovie.plot}}</h6>
   <p>Donated by: {{dbMovie.donor.username}}</p>
@@ -14,10 +15,9 @@
     
   {{/each}}
   
-
+{{#if donorMatch}}
   <a href="/movies/{{dbMovie._id}}/edit">Edit This Movie</a>
 
-{{#if donorMatch}}
   <form action="/movies/{{dbMovie._id}}/delete" method="post">
     <button type="submit">Delete Movie</button>
   </form>

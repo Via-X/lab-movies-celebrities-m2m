@@ -1,9 +1,12 @@
 <h1>New Movies</h1>
 
-<form action="/movies/create" method="post">
+<form action="/movies/create" method="post" enctype="multipart/form-data">
 
   <label>Title</label>
   <input type="text" name="movtitle" />
+
+  <label>Image</label>
+  <input type="file" name="movimage" />
 
   <label>Genre</label>
   <input type="text" name="movgenre" />
