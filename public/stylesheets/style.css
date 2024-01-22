@@ -41,3 +41,19 @@ a {
   margin-top: 0;
   
 }
+
+#edit-title-input{
+  display: none;
+}
+
+#edit-genre-input{
+  display: none;
+}
+
+#edit-plot-input{
+  display: none;
+}
+
+#movie-id{
+  display: none;
+}

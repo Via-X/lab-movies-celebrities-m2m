@@ -1,10 +1,37 @@
 <h2>Movie Details</h2>
 
 <div>
-  <h3>Movie Title: {{dbMovie.title}}</h3>
+  <h3>Movie Title: 
+    <span id="edit-title-input" data-theid="{{dbMovie._id}}">
+      <input type="text" value="{{dbMovie.title}}">
+      <button id="submit-title">Submit</button>
+      <button id="cancel-title">Cancel</button>
+    </span>
+    <span id="the-title">{{dbMovie.title}}</span> 
+    <button id="edit-title">edit</button>
+  </h3>
+
   <img src="{{dbMovie.image}}" style="height: 150px">
-  <h6>Genre : {{dbMovie.genre}}</h6>
-  <h6>Plot : {{dbMovie.plot}}</h6>
+
+  <h6>Genre : 
+    <span id="edit-genre-input" data-theid="{{dbMovie._id}}">
+      <input type="text" value="{{dbMovie.genre}}">
+      <button id="submit-genre">Submit</button>
+      <button id="cancel-genre">Cancel</button>
+    </span>
+    <span id="the-genre">{{dbMovie.genre}}</span> 
+    <button id="edit-genre">edit</button>
+  </h6>
+
+  <h6>Plot : 
+    <span id="edit-plot-input" data-theid="{{dbMovie._id}}">
+      <input type="text" value="{{dbMovie.plot}}">
+      <button id="submit-plot">Submit</button>
+      <button id="cancel-plot">Cancel</button>
+    </span>
+    <span id="the-plot">{{dbMovie.plot}}</span> 
+    <button id="edit-plot">edit</button>
+  </h6>
   <p>Donated by: {{dbMovie.donor.username}}</p>
 
   {{#each dbMovie.cast}}
@@ -24,3 +51,6 @@
 {{/if}}
 </div>
 <hr />
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../javascripts/editmovie.js"><script>

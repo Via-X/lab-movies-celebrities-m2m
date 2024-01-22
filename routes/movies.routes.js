@@ -118,6 +118,41 @@ router.post("/:theId", guardRoute, (req, res, next) => {
   });
 });
 
+//API
+router.post("/api/edit/:theId", (req, res, next) => {
+
+  const theUpdate = {};
+  if(req.body.title) theUpdate.title = req.body.title;
+  if(req.body.genre) theUpdate.genre = req.body.genre;
+  if(req.body.plot) theUpdate.plot = req.body.plot;
+
+
+  Movie.findByIdAndUpdate(
+    req.params.theId,
+    theUpdate
+  )
+  .then((response) => {
+    res.json(response);
+  })
+  .catch((err) => {
+    next(err);
+  })
+  
+})
+
+//API
+router.get("/api/details/:id", (req, res, next) => {
+  Movie.findById(req.params.id)
+  .then((dbMovie) => {
+    res.json({movie: dbMovie});
+  })
+  .catch((err) => {
+    res.json({error: err})
+  })
+});
+
+
+
 
 //DELETE 
 //Route to delete a Movie and Cast Members with Async/Await
@@ -149,5 +184,7 @@ router.post("/:theId/delete", guardRoute, async (req, res, next) => {
       } catch (error) {
       };
 });
+
+
 
 module.exports = router;
