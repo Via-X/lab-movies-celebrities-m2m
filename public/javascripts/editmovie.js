@@ -77,17 +77,4 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(newInfo);
   }
 
-
-
-
-
-
-
-  // axios.get("https://worldtimeapi.org/api/timezone/america/new_york")
-  // .then((response) => {
-  //   console.log(response)
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  // })  
 });
